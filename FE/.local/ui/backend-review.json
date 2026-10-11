@@ -1,0 +1,43 @@
+{
+  "realLogin": true,
+  "realLookup": true,
+  "screens": [
+    {
+      "page": "Tổng quan & workflow",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Cuộc họp kỹ thuật",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Báo cáo & phê duyệt",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Kho tri thức",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Trợ lý sàn máy",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Sự cố & phản hồi",
+      "overflow": false,
+      "accessibilityViolations": 0
+    },
+    {
+      "page": "Ghi chú kỹ sư",
+      "overflow": false,
+      "accessibilityViolations": 0
+    }
+  ],
+  "browserErrors": [],
+  "logout": true
+}

@@ -18,6 +18,14 @@ chi tiết trong BE/README.md. Unit tests kiểm tra cả demo và phép chuyể
 
 Các phần mô tả prototype và `localStorage` bên dưới áp dụng cho chế độ demo độc lập.
 
+## Giao diện và kiểm tra responsive
+
+Sidebar dùng nền slate, màu đỏ DENSO nhấn vào thao tác chính. Đăng nhập có tài khoản demo công khai, nút điền nhanh và hiện/ẩn mật khẩu. Các trang dùng chung kiểu panel, trạng thái và tiến trình phê duyệt; workflow có bản tóm tắt dễ đọc trên điện thoại.
+
+`npm run test:e2e:login` kiểm tra đăng nhập ở 320/768/1024/1440px, thao tác bàn phím, trạng thái chờ và lỗi xác thực; không cần MySQL. `npm run build:demo` rồi `npm run test:e2e` kiểm tra cả 7 trang ở các kích thước trên, ảnh minh họa, WCAG A/AA và luồng phát hành v1 → v2. Build cuối để chạy backend dùng `npm run build`.
+
+Quyết định thiết kế và kết quả thử skill Archify được ghi trong [`design/UI-NOTES.md`](design/UI-NOTES.md).
+
 Nút **Mã nguồn** tải ZIP gồm FE, BE và README gốc; bỏ qua `.env`, uploads, database thử và node_modules.
 
 ## Chạy local

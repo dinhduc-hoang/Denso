@@ -94,6 +94,21 @@ for (const width of [320, 768, 1024, 1440]) {
     for (const label of labels) {
       await navigate(page, label);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect
+        .poll(
+          () =>
+            page
+              .locator("img:visible")
+              .evaluateAll((images) =>
+                images
+                  .filter(
+                    (image) => !image.complete || image.naturalWidth === 0,
+                  )
+                  .map((image) => image.src),
+              ),
+          { message: `Images load on ${label}` },
+        )
+        .toEqual([]);
       await page.screenshot({
         path: testInfo.outputPath(
           `screen-${labels.indexOf(label)}-${width}.png`,
