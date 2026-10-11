@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Vòng tri thức Meeting-to-Shopfloor",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "knowledge-cycle", "label": "Từ cuộc họp đến vận hành" },
+    { "id": "field-learning", "label": "Học từ hiện trường", "variant": "exception" }
+  ],
+  "mainPath": ["meeting-input", "source-report", "expert-approval", "published-knowledge", "operator-guide", "field-feedback"],
+  "nodes": [
+    { "id": "meeting-input", "lane": "knowledge-cycle", "col": 0, "type": "frontend", "label": "Cuộc họp", "sublabel": "Transcript + tệp" },
+    { "id": "source-report", "lane": "knowledge-cycle", "col": 1, "type": "backend", "label": "Báo cáo", "sublabel": "Quyết định có nguồn" },
+    { "id": "expert-approval", "lane": "knowledge-cycle", "col": 2, "width": 132, "type": "security", "label": "Chuyên gia duyệt", "sublabel": "Nội dung + phạm vi" },
+    { "id": "published-knowledge", "lane": "knowledge-cycle", "col": 3, "type": "database", "label": "Kho tri thức", "sublabel": "Phiên bản đã duyệt" },
+    { "id": "operator-guide", "lane": "knowledge-cycle", "col": 4, "width": 116, "type": "frontend", "label": "Trợ lý sàn máy", "sublabel": "Action Card đúng trạm" },
+    { "id": "field-feedback", "lane": "knowledge-cycle", "col": 5, "type": "external", "label": "Phản hồi", "sublabel": "Kết quả xử lý" },
+    { "id": "engineer-response", "lane": "field-learning", "col": 5, "width": 124, "type": "external", "label": "Kỹ sư tiếp nhận", "sublabel": "Sự cố cần hỗ trợ" },
+    { "id": "engineer-note", "lane": "field-learning", "col": 4, "type": "backend", "label": "Ghi chú kỹ sư", "sublabel": "Chẩn đoán + xử lý" },
+    { "id": "revision-review", "lane": "field-learning", "col": 3, "type": "security", "label": "Duyệt bản mới", "sublabel": "Giữ lịch sử phiên bản" }
+  ],
+  "edges": [
+    { "from": "meeting-input", "to": "source-report", "label": "Trích xuất", "role": "main" },
+    { "from": "source-report", "to": "expert-approval", "label": "Đối chiếu", "role": "main" },
+    { "from": "expert-approval", "to": "published-knowledge", "label": "Phát hành v1", "role": "main", "variant": "emphasis" },
+    { "from": "published-knowledge", "to": "operator-guide", "label": "Tra cứu", "role": "main" },
+    { "from": "operator-guide", "to": "field-feedback", "label": "Áp dụng", "role": "main" },
+    { "from": "field-feedback", "to": "engineer-response", "label": "Chưa hiệu quả", "role": "branch", "variant": "security" },
+    { "from": "operator-guide", "to": "engineer-response", "label": "Không tìm thấy", "role": "branch", "variant": "dashed" },
+    { "from": "engineer-response", "to": "engineer-note", "label": "Ghi nhận", "role": "branch" },
+    { "from": "engineer-note", "to": "revision-review", "label": "Bản nháp", "role": "branch" },
+    { "from": "revision-review", "to": "published-knowledge", "label": "Phát hành v2", "role": "return", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "rose", "title": "Con người phê duyệt", "items": ["Báo cáo giữ nguồn và ý kiến phản biện.", "Chỉ nội dung đã duyệt được phát hành."] },
+    { "dot": "emerald", "title": "Đúng phạm vi vận hành", "items": ["Hướng dẫn khớp máy, trạm và sản phẩm.", "Thiếu hướng dẫn chuyển sang kỹ sư."] },
+    { "dot": "cyan", "title": "Tri thức có lịch sử", "items": ["Ghi chú hiện trường tạo bản nháp mới.", "Phiên bản cũ được giữ để đối chiếu."] }
+  ]
+}
