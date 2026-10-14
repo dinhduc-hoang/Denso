@@ -2,10 +2,10 @@ import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { createApp } from "../../src/app.js";
-import { config } from "../../src/config.js";
-import { pool } from "../../src/db.js";
-import { hashPassword } from "../../src/auth.js";
-import { sampleMeeting } from "../../src/sample.js";
+import { config } from "../../src/config/env.js";
+import { pool } from "../../src/config/database.js";
+import { hashPassword } from "../../src/utils/crypto.js";
+import { sampleMeeting } from "../../src/tools/sample.js";
 
 if (!config.DB_NAME.endsWith("_test"))
   throw new Error(

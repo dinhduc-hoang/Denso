@@ -1,6 +1,6 @@
 import { createApp } from "./app.js";
-import { pool } from "./db.js";
-import { config } from "./config.js";
+import { pool } from "./config/database.js";
+import { config } from "./config/env.js";
 
 await pool.query("SELECT 1");
 const server = createApp().listen(config.PORT, config.HOST, () =>

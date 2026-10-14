@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: denso-meeting-shopfloor
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: SERVE_FRONTEND
+        value: "true"
+      - key: TRUST_PROXY
+        value: "1"
+      - key: FILE_STORAGE
+        value: mysql
+      - key: UPLOAD_MAX_MB
+        value: "5"
+      - key: CORS_ORIGINS
+        value: ""
+      - key: DB_SSL
+        value: "true"
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: defaultdb
+      - key: DB_SSL_CA
+        sync: false
+      - key: SEED_PASSWORD
+        value: DensoDemo@2026!

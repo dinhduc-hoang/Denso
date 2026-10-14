@@ -1,7 +1,7 @@
 import { ArrowUpRight, Check } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@astryxdesign/core/Badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card } from "@astryxdesign/core/Card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -50,7 +50,10 @@ export function SourceButton({ source, children }) {
 export function Pill({ tone = "", children }) {
   return (
     <Badge
-      variant="secondary"
+      variant={
+        { green: "success", amber: "warning", red: "error" }[tone] || "neutral"
+      }
+      label={children}
       className={cn(
         "rounded-full border px-2.5 py-1 text-[11px] font-semibold",
         {
@@ -59,15 +62,13 @@ export function Pill({ tone = "", children }) {
           "bg-accent text-primary": tone === "red",
         },
       )}
-    >
-      {children}
-    </Badge>
+    />
   );
 }
 
 export function Panel({ className, children }) {
   return (
-    <Card className={cn("panel gap-0 p-5 shadow-none sm:p-6", className)}>
+    <Card padding={0} className={cn("panel p-5 sm:p-6", className)}>
       {children}
     </Card>
   );

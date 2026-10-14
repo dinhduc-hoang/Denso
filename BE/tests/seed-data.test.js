@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildSeedData, seedUsers } from "../src/seed-data.js";
-import { verifySources } from "../src/reports.js";
-import { seedAsset } from "../src/seed-assets.js";
-import { detectType } from "../src/files.js";
+import { buildSeedData, seedUsers } from "../src/tools/seed-data.js";
+import { verifySources } from "../src/services/reports.js";
+import { seedAsset } from "../src/tools/seed-assets.js";
+import { detectType } from "../src/utils/file-type.js";
 
 test("complete seed covers workflow states with valid sources and version links", () => {
   const data = buildSeedData(new Date("2026-10-11T08:00:00Z"));

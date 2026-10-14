@@ -4,7 +4,7 @@ Base URL `/api`. Authenticate with `Authorization: Bearer <opaque session token>
 Responses `{data: ...}`; lists also include `pagination: {page,pageSize,totalItems,totalPages}`.
 Errors `{error: {code,message,details?},requestId}`; 401 unauthenticated, 403 wrong role,
 404 missing resource, 409 invalid state/stale version, 422 invalid input, 503 database unavailable.
-All inputs are validated with strict Zod schemas in `src/schemas.js`.
+All inputs are validated with strict Zod schemas in `src/utils/schemas.js`.
 
 | API | Input / result | Roles |
 | --- | --- | --- |

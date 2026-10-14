@@ -14,12 +14,16 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:backend": "playwright test --config playwright.backend.config.js",
+    "test:e2e:cloud": "playwright test --config playwright.cloud.config.js",
     "test:e2e:login": "playwright test --config playwright.login.config.js",
     "build:demo": "npm run prebuild && vite build --mode demo",
     "lint": "eslint .",
     "format": "prettier --write src tests *.js *.json *.md"
   },
   "dependencies": {
+    "@astryxdesign/core": "0.7.0",
+    "@astryxdesign/theme-neutral": "0.7.0",
+    "@stylexjs/stylex": "0.19.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",

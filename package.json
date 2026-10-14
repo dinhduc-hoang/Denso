@@ -1,0 +1,13 @@
+{
+  "name": "denso-meeting-shopfloor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "node deploy/build.mjs",
+    "start": "node deploy/start.mjs"
+  }
+}

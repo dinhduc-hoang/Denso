@@ -4,6 +4,28 @@ Express 5, Node.js 22.12+ và MySQL 8.0+. Backend lưu dữ liệu cho 7 màn h�
 đăng nhập, cuộc họp/transcript, báo cáo có nguồn, kiểm duyệt, tri thức có phiên bản,
 tra cứu theo phạm vi, phản hồi, sự cố, ghi chú kỹ sư, bằng chứng và xuất JSON.
 
+## Cấu trúc source
+
+```text
+src/
+├── config/         # Biến môi trường, kết nối MySQL, đường dẫn lưu tệp
+├── controllers/    # Nhận request, kiểm tra đầu vào, trả HTTP response
+├── middlewares/    # Xác thực, phân quyền, upload, giới hạn đăng nhập, xử lý lỗi
+├── models/         # Truy vấn và ánh xạ dữ liệu MySQL
+├── routes/         # Khai báo endpoint và gắn middleware/controller
+├── services/       # Nghiệp vụ, transaction, tạo báo cáo và tra cứu tri thức
+├── tools/          # Seed database, dữ liệu và tệp mẫu
+├── utils/          # Schema Zod, lỗi API, mã hóa và hàm dùng chung
+├── app.js          # Cấu hình Express, gắn API và frontend
+└── server.js       # Khởi chạy HTTP server và đóng kết nối khi dừng
+```
+
+`routes/index.js` tập hợp các API dưới `/api`; health và đăng nhập được gắn
+trước middleware xác thực. Các route còn lại giữ quyền truy cập theo vai trò.
+Controller xử lý HTTP; service thực hiện nghiệp vụ và transaction, dùng model
+và kết nối trong `config/database.js`. Các lệnh CLI vẫn nằm trong `scripts/`;
+logic và dữ liệu seed nằm trong `src/tools/`.
+
 ## Chạy local
 
 ```powershell
@@ -87,6 +109,7 @@ Thay đổi vai trò trên FE không thể cấp quyền phê duyệt ở server
 - Sự cố chưa có hướng dẫn có thể tạo tri thức v1 mới sau chuyên gia duyệt ghi chú.
 - Upload lưu byte thật trong `BE/uploads`, metadata trong MySQL; tệp được kiểm tra loại/đầu tệp,
   giới hạn mặc định 20 MB. Download yêu cầu đăng nhập, không phục vụ uploads như thư mục public.
+  Khi deploy dùng `FILE_STORAGE=mysql`, byte tệp lưu trong MySQL cùng metadata; xem [Render + Aiven miễn phí](../deploy/README.md).
 - “Phiên mới” trên FE giữ dữ liệu và lịch sử ở server. Sửa quyết định/mô tả có nút lưu rõ ràng.
 - PDF dùng chức năng in của trình duyệt; workflow/draw.io là assets FE.
 

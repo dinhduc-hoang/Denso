@@ -1,6 +1,8 @@
 import {
-  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
   BookOpen,
+  Check,
   ClipboardCheck,
   Download,
   FileAudio,
@@ -13,158 +15,282 @@ import { Button } from "@/components/ui/button";
 import WorkflowSummary from "@/components/WorkflowSummary";
 import { ActButton, Note, Panel, Pill } from "@/components/shared";
 import { useDemo } from "@/hooks/demo-context";
+import { createElement, useRef } from "react";
+
+function KnowledgeLoop() {
+  return (
+    <div
+      className="loop-visual"
+      aria-label="Cuộc họp, chuyên gia duyệt, sàn máy và phản hồi tạo thành vòng tri thức"
+    >
+      <div className="loop-caption">
+        <span className="status-dot" /> TRI THỨC LUÔN CÓ NGUỒN
+      </div>
+      <div className="loop-nodes">
+        {[
+          [FileAudio, "Cuộc họp", "01"],
+          [ShieldCheck, "Kiểm duyệt", "02"],
+          [Wrench, "Sàn máy", "03"],
+        ].map(([icon, label, number]) => (
+          <div className="loop-node" key={label}>
+            <span className="loop-node-number">{number}</span>
+            <span className="loop-node-icon">
+              {createElement(icon, {
+                className: "size-6",
+                "aria-hidden": true,
+              })}
+            </span>
+            <strong>{label}</strong>
+          </div>
+        ))}
+      </div>
+      <div className="loop-return">
+        <RotateCcw className="size-3.5" aria-hidden="true" /> Phản hồi để tri
+        thức tốt hơn
+      </div>
+    </div>
+  );
+}
 
 export default function Overview() {
-  const { state, backend, serverData } = useDemo();
-  const metricIcons = [FileAudio, ClipboardCheck, BookOpen, TriangleAlert];
+  const workflowRef = useRef(null);
+  const { state, backend, serverData, go } = useDemo();
+  const next = !state.processed
+    ? [1, "Tạo báo cáo đầu tiên", "Bắt đầu từ cuộc họp và tài liệu kỹ thuật."]
+    : !state.approved
+      ? [
+          2,
+          "Kiểm duyệt báo cáo",
+          "Đối chiếu nguồn trước khi phát hành tri thức.",
+        ]
+      : state.noteDraft && !state.noteApproved
+        ? [6, "Duyệt ghi chú hiện trường", "Hoàn thiện vòng phản hồi từ kỹ sư."]
+        : [
+            4,
+            "Đưa tri thức đến sàn máy",
+            "Tra cứu hướng dẫn đã duyệt cho CAM-02.",
+          ];
+  const metrics = backend
+    ? [
+        [
+          serverData?.overview?.meetings || 0,
+          "Cuộc họp trên máy chủ",
+          FileAudio,
+        ],
+        [
+          serverData?.overview?.draftReports || 0,
+          "Báo cáo cần kiểm duyệt",
+          ClipboardCheck,
+        ],
+        [
+          serverData?.overview?.activeKnowledge || 0,
+          "Hướng dẫn đang hiệu lực",
+          BookOpen,
+        ],
+        [
+          serverData?.overview?.openIncidents || 0,
+          "Sự cố chờ xử lý",
+          TriangleAlert,
+        ],
+      ]
+    : [
+        [1, "Cuộc họp mẫu", FileAudio],
+        [state.processed ? 1 : 0, "Báo cáo đã trích xuất", ClipboardCheck],
+        [state.approved ? 1 : 0, "Hướng dẫn đã duyệt", BookOpen],
+        [state.incident ? 1 : 0, "Sự cố đã chuyển kỹ sư", TriangleAlert],
+      ];
+  const milestones = [
+    [
+      1,
+      FileAudio,
+      "Thu lại quyết định",
+      "Cuộc họp → báo cáo có nguồn",
+      state.processed,
+    ],
+    [
+      2,
+      ShieldCheck,
+      "Chuyên gia kiểm duyệt",
+      "Đối chiếu → phê duyệt → phát hành",
+      state.approved,
+    ],
+    [
+      4,
+      Wrench,
+      "Áp dụng tại sàn máy",
+      "Hướng dẫn → xử lý → phản hồi",
+      state.closed,
+    ],
+    [
+      6,
+      RotateCcw,
+      "Hoàn thiện vòng tri thức",
+      "Ghi chú kỹ sư → phiên bản mới",
+      state.noteApproved,
+    ],
+  ];
   return (
     <>
-      <Panel className="overview-hero grid items-center gap-8 p-6 xl:grid-cols-[1.1fr_0.9fr] lg:p-8">
+      <div className="overview-welcome">
         <div>
-          <div className="eyebrow">MEETING-TO-SHOPFLOOR · VÒNG TRI THỨC</div>
-          <h1 className="max-w-xl text-3xl lg:text-4xl">
+          <span className="eyebrow">TỔNG QUAN</span>
+          <h2>Mỗi quyết định. Một bước tiến.</h2>
+          <p className="muted mb-0">
+            Kết nối kinh nghiệm chuyên gia với hành động tại hiện trường.
+          </p>
+        </div>
+        <Pill>{backend ? "Workspace" : "Không gian demo"}</Pill>
+      </div>
+      <Panel className="overview-hero">
+        <div className="hero-copy">
+          <div className="hero-kicker">
+            <span /> MEETING-TO-SHOPFLOOR LOOP
+          </div>
+          <h1>
             Quyết định trong họp.
             <br />
-            <span className="text-primary">Tri thức trên sàn máy.</span>
+            <span>Tri thức trên sàn máy.</span>
           </h1>
-          <p className="sub my-5 max-w-md">
-            Biến trao đổi của chuyên gia thành báo cáo có nguồn và hướng dẫn vận
-            hành đã duyệt. Mỗi lần xử lý lỗi bổ sung một vòng tri thức.
+          <p>
+            Đưa những quyết định có nguồn thành hướng dẫn đã duyệt. Đúng người,
+            đúng thiết bị, đúng thời điểm.
           </p>
           <div className="row-actions">
             <ActButton action="start">Bắt đầu demo →</ActButton>
-            <ActButton action="workflow" secondary>
-              Xem workflow
-            </ActButton>
-            <Button asChild variant="outline" size="sm">
-              <a href={`${import.meta.env.BASE_URL}source-code.zip`} download>
-                <Download className="size-4" />
-                Mã nguồn
-              </a>
+            <Button
+              variant="outline"
+              className="hero-secondary border-slate-500 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              onClick={() => {
+                workflowRef.current.open = true;
+                workflowRef.current.scrollIntoView?.({
+                  behavior: window.matchMedia?.(
+                    "(prefers-reduced-motion: reduce)",
+                  ).matches
+                    ? "instant"
+                    : "smooth",
+                  block: "start",
+                });
+                workflowRef.current
+                  .querySelector("summary")
+                  .focus({ preventScroll: true });
+              }}
+            >
+              Xem workflow{" "}
+              <ArrowUpRight className="size-4" aria-hidden="true" />
             </Button>
           </div>
-          <p className="tiny muted mt-3 mb-0">
-            {backend
-              ? "Transcript mẫu · lưu dữ liệu và kiểm duyệt trên máy chủ · chưa kết nối máy"
-              : "Prototype tương tác · dữ liệu giả lập · không kết nối máy"}
-          </p>
         </div>
-        <div className="overview-flow">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <span className="text-xs font-semibold">
-              Từ quyết định đến hành động
-            </span>
-            <Pill tone="green">Có kiểm duyệt</Pill>
-          </div>
-          {[
-            [
-              FileAudio,
-              "Thu lại quyết định",
-              "Ghi âm / bản vẽ → báo cáo có nguồn",
-            ],
-            [
-              ShieldCheck,
-              "Chuyên gia giữ quyền phê duyệt",
-              "Chỉnh sửa → phát hành tri thức theo phiên bản",
-            ],
-            [
-              Wrench,
-              "Hướng dẫn tới đúng trạm máy",
-              "Tra cứu → Action Card → phản hồi hiện trường",
-            ],
-          ].map(([icon, title, desc], i) => {
-            const Icon = icon;
-            return (
-              <div key={title}>
-                {i > 0 && (
-                  <div className="flex justify-center py-2">
-                    <ArrowDown
-                      className="size-4 text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                  </div>
-                )}
-                <div className="overview-flow-item">
-                  <span className="overview-flow-icon">
-                    <Icon className="size-4" aria-hidden="true" />
-                  </span>
-                  <div className="min-w-0">
-                    <strong className="text-[13px]">{title}</strong>
-                    <small className="muted mt-1 block text-xs leading-5">
-                      {desc}
-                    </small>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          <div className="tiny muted mt-4 flex items-center gap-2">
-            <RotateCcw className="size-4 shrink-0 text-primary" />
-            Ghi chú kỹ sư → bản nháp mới → chuyên gia duyệt
-          </div>
-        </div>
+        <KnowledgeLoop />
       </Panel>
-      <div className="my-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
-        {(backend
-          ? [
-              [
-                String(serverData?.overview?.meetings || 0),
-                "Cuộc họp trên máy chủ",
-              ],
-              [
-                String(serverData?.overview?.draftReports || 0),
-                "Báo cáo cần kiểm duyệt",
-              ],
-              [
-                String(serverData?.overview?.activeKnowledge || 0),
-                "Hướng dẫn đang hiệu lực",
-              ],
-              [
-                String(serverData?.overview?.openIncidents || 0),
-                "Sự cố chờ xử lý",
-              ],
-            ]
-          : [
-              ["02", "Trụ cột trong một vòng khép kín"],
-              ["04", "Vai trò: điều phối, chuyên gia, công nhân, kỹ sư"],
-              [state.approved ? "01" : "00", "Hướng dẫn đã duyệt trong demo"],
-              [
-                state.incident ? "01" : "00",
-                "Sự cố được chuyển kỹ sư trong demo",
-              ],
-            ]
-        ).map(([value, label], index) => {
-          const Icon = metricIcons[index];
-          return (
-            <Panel key={label} className="mb-0 p-4 sm:p-5">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-semibold tracking-wider text-muted-foreground">
-                  0{index + 1} / {backend ? "WORKSPACE" : "DEMO"}
-                </span>
-                <span className="metric-icon">
-                  <Icon className="size-4" aria-hidden="true" />
-                </span>
-              </div>
-              <b className="metric-value">{value}</b>
-              <span className="tiny muted mt-1 block leading-5">{label}</span>
-            </Panel>
-          );
-        })}
+      <div className="overview-metrics">
+        {metrics.map(([value, label, icon], index) => (
+          <Panel key={label} className="metric-card">
+            <div className="flex items-center justify-between gap-2">
+              <span className="metric-icon" data-tone={index}>
+                {createElement(icon, {
+                  className: "size-5",
+                  "aria-hidden": true,
+                })}
+              </span>
+              <span className="metric-context">
+                {backend ? "WORKSPACE" : "DỮ LIỆU MẪU"}
+              </span>
+            </div>
+            <div className="metric-bottom">
+              <b className="metric-value">{String(value).padStart(2, "0")}</b>
+              <span>{label}</span>
+            </div>
+          </Panel>
+        ))}
       </div>
-      <div id="workflow">
-        <Panel>
+      <div className="overview-detail">
+        <Panel className="overview-journey">
           <div className="panel-head">
             <div>
-              <div className="eyebrow mb-1">QUY TRÌNH KHÉP KÍN</div>
-              <h2>Từ cuộc họp đến hiện trường</h2>
+              <div className="eyebrow mb-1">MỘT VÒNG KHÉP KÍN</div>
+              <h2>Tri thức đi đến đâu?</h2>
             </div>
+            <Pill tone="green">Có kiểm duyệt</Pill>
+          </div>
+          <div className="journey-list">
+            {milestones.map(
+              ([target, icon, title, description, done], index) => (
+                <button
+                  className="journey-row"
+                  onClick={() => go(target)}
+                  key={title}
+                >
+                  <span
+                    className={`journey-icon ${done ? "journey-done" : ""}`}
+                  >
+                    {done ? (
+                      <Check className="size-4" aria-hidden="true" />
+                    ) : (
+                      createElement(icon, {
+                        className: "size-4",
+                        "aria-hidden": true,
+                      })
+                    )}
+                  </span>
+                  <span className="journey-text">
+                    <strong>{title}</strong>
+                    <small>{description}</small>
+                  </span>
+                  <span className="journey-state">
+                    {done ? "Hoàn thành" : `0${index + 1}`}
+                  </span>
+                  <ArrowUpRight
+                    className="size-4 shrink-0 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                </button>
+              ),
+            )}
+          </div>
+        </Panel>
+        <Panel className="overview-next">
+          <span className="eyebrow">BƯỚC TIẾP THEO</span>
+          <span className="next-icon">
+            <ArrowUpRight className="size-6" aria-hidden="true" />
+          </span>
+          <h2>{next[1]}</h2>
+          <p className="muted">{next[2]}</p>
+          <Button onClick={() => go(next[0])} className="w-full">
+            Tiếp tục công việc{" "}
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Button>
+          <div className="next-scope">
+            <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+            <span>Chỉ hướng dẫn đã duyệt mới được đưa xuống sàn máy.</span>
+          </div>
+        </Panel>
+      </div>
+      <Panel className="overview-resources">
+        <div className="panel-head">
+          <div>
+            <div className="eyebrow mb-1">TÀI LIỆU & QUY TRÌNH</div>
+            <h2>Từ cuộc họp đến hiện trường</h2>
+          </div>
+          <div className="row-actions">
             <Button asChild variant="outline" size="sm">
               <a href={`${import.meta.env.BASE_URL}workflow.drawio`} download>
                 <Download className="size-4" />
                 File draw.io
               </a>
             </Button>
+            <Button asChild variant="ghost" size="sm">
+              <a href={`${import.meta.env.BASE_URL}source-code.zip`} download>
+                <Download className="size-4" />
+                Mã nguồn
+              </a>
+            </Button>
           </div>
+        </div>
+        <details ref={workflowRef} id="workflow" className="workflow-details">
+          <summary>
+            Xem sơ đồ vòng tri thức{" "}
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </summary>
           <div
             className="hidden overflow-x-auto rounded-lg border bg-background/50 p-3 sm:p-5 md:block"
             tabIndex={0}
@@ -179,47 +305,44 @@ export default function Overview() {
           </div>
           <WorkflowSummary />
           <Note>
-            Điểm kiểm soát chính: chỉ tri thức{" "}
-            <b>đã duyệt, còn hiệu lực và đúng phạm vi</b> được hiển thị cho công
-            nhân. Nhánh không tìm thấy / chưa hiệu quả luôn dẫn tới kỹ sư.
+            Chỉ tri thức <b>đã duyệt, còn hiệu lực và đúng phạm vi</b> được hiển
+            thị cho công nhân. Nhánh chưa tìm thấy hoặc chưa hiệu quả dẫn tới kỹ
+            sư.
           </Note>
-        </Panel>
-      </div>
-      <Panel>
-        <div className="panel-head">
-          <h2>Phạm vi & lộ trình triển khai</h2>
-          <Pill tone="red">MVP tập trung</Pill>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {[
-            [
-              "LÀM TRƯỚC · BẢN DEMO NÀY",
-              "Chứng minh luồng có thể chạy",
-              backend
-                ? "Input mẫu, upload, báo cáo có nguồn, phê duyệt, tra cứu, sự cố và phiên bản mới. Dữ liệu lưu MySQL; thao tác kiểm tra quyền tài khoản."
-                : "Input mẫu, báo cáo có nguồn, phê duyệt, tra cứu, nhánh gọi kỹ sư và phiên bản mới. Trạng thái lưu trong trình duyệt.",
-            ],
-            [
-              "TÍCH HỢP TIẾP",
-              "Một lát cắt AI chạy thật",
-              "Transcript → JSON có cấu trúc → giao diện báo cáo. Sau đó thêm STT và kho tri thức nội bộ.",
-            ],
-            [
-              "LỘ TRÌNH DÀI HẠN",
-              "On-premise & tích hợp vận hành",
-              "Phân quyền, dữ liệu nhà máy, hệ thống sự cố. Can thiệp PLC là dự án riêng, cần kiểm định và giới hạn cứng.",
-            ],
-          ].map(([tag, title, desc], i) => (
-            <article
-              key={title}
-              className={`rounded-lg border p-5 ${i === 0 ? "border-primary/20 bg-accent/40" : "bg-background/40"}`}
-            >
-              <div className="eyebrow">{tag}</div>
-              <h3 className="mt-3">{title}</h3>
-              <p className="tiny muted mb-0">{desc}</p>
-            </article>
-          ))}
-        </div>
+        </details>
+        <details className="workflow-details">
+          <summary>
+            Phạm vi & lộ trình triển khai{" "}
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </summary>
+          <div className="grid gap-4 py-4 lg:grid-cols-3">
+            {[
+              [
+                "BẢN HIỆN TẠI",
+                "Chứng minh vòng tri thức",
+                backend
+                  ? "Upload, báo cáo có nguồn, kiểm duyệt, tra cứu, sự cố và phiên bản mới. Dữ liệu lưu trên máy chủ."
+                  : "Dữ liệu mẫu, báo cáo có nguồn, kiểm duyệt, tra cứu và phản hồi. Trạng thái lưu trong trình duyệt.",
+              ],
+              [
+                "TÍCH HỢP TIẾP",
+                "Từ transcript đến báo cáo",
+                "Trích xuất có cấu trúc, phiên âm và kho tri thức nội bộ.",
+              ],
+              [
+                "LỘ TRÌNH DÀI HẠN",
+                "Tích hợp vận hành",
+                "Dữ liệu nhà máy và hệ thống sự cố. Tích hợp PLC cần dự án kiểm định riêng.",
+              ],
+            ].map(([tag, title, description]) => (
+              <article key={title}>
+                <span className="eyebrow">{tag}</span>
+                <h3 className="mt-2">{title}</h3>
+                <p className="tiny muted">{description}</p>
+              </article>
+            ))}
+          </div>
+        </details>
       </Panel>
     </>
   );

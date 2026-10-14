@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import {
   ArrowUpRight,
   BookOpen,
+  Building2,
   ChevronRight,
   ClipboardCheck,
   FileAudio,
@@ -54,12 +55,18 @@ function Sidebar() {
   return (
     <aside className="sidebar flex flex-col p-4 md:sticky md:top-0 md:h-dvh md:px-4 md:py-7">
       <Brand className="px-3" />
-      <div className="sidebar-intro hidden md:block">
-        <span className="sidebar-product">Tri thức chuyên gia.</span>
-        <span className="sidebar-caption">Kết nối đến sàn máy.</span>
+      <div className="sidebar-intro hidden md:flex">
+        <Building2
+          className="size-5 shrink-0 text-primary"
+          aria-hidden="true"
+        />
+        <div>
+          <span className="sidebar-product">Không gian làm việc</span>
+          <span className="sidebar-caption">CAM-02 · Trạm Demo A</span>
+        </div>
       </div>
       <div className="sidebar-label mb-3 hidden px-3 text-[10px] tracking-widest md:block">
-        VÒNG TRI THỨC
+        KHÔNG GIAN TRI THỨC
       </div>
       <nav
         aria-label="Các bước demo"
@@ -68,26 +75,31 @@ function Sidebar() {
         {labels.map((label, index) => {
           const Icon = navigationIcons[index];
           return (
-            <Button
-              key={label}
-              variant="ghost"
-              aria-current={state.page === index ? "page" : undefined}
-              onClick={() => go(index)}
-              className={cn(
-                "sidebar-link h-auto min-h-11 shrink-0 justify-start gap-3 px-3 py-3 text-left text-xs text-[var(--sidebar-muted)] hover:bg-white/5 hover:text-white md:w-full md:text-[13px]",
-                state.page === index &&
-                  "sidebar-link-active bg-white/10 text-white hover:bg-white/15 hover:text-white",
+            <Fragment key={label}>
+              {(index === 1 || index === 4) && (
+                <div className="sidebar-group hidden md:block">
+                  {index === 1 ? "CUỘC HỌP & TRI THỨC" : "VẬN HÀNH HIỆN TRƯỜNG"}
+                </div>
               )}
-            >
-              <Icon className="size-4 shrink-0" aria-hidden="true" />
-              {label}
-              {state.page === index && (
-                <ChevronRight
-                  className="ml-auto hidden size-3.5 md:block"
-                  aria-hidden="true"
-                />
-              )}
-            </Button>
+              <Button
+                variant="ghost"
+                aria-current={state.page === index ? "page" : undefined}
+                onClick={() => go(index)}
+                className={cn(
+                  "sidebar-link h-auto min-h-11 shrink-0 justify-start gap-3 px-3 py-3 text-left text-xs md:w-full md:text-[13px]",
+                  state.page === index && "sidebar-link-active",
+                )}
+              >
+                <Icon className="size-4 shrink-0" aria-hidden="true" />
+                {label}
+                {state.page === index && (
+                  <ChevronRight
+                    className="ml-auto hidden size-3.5 md:block"
+                    aria-hidden="true"
+                  />
+                )}
+              </Button>
+            </Fragment>
           );
         })}
       </nav>
@@ -114,8 +126,17 @@ function Sidebar() {
 }
 
 function Workspace() {
-  const { state, go, act, notification, backend, user, logout, processing } =
-    useDemo();
+  const {
+    state,
+    go,
+    act,
+    notification,
+    backend,
+    user,
+    logout,
+    processing,
+    dialog,
+  } = useDemo();
   const workspaceRef = useRef(null);
   const previousPage = useRef(state.page);
   const Page = pages[state.page] || Overview;
@@ -135,12 +156,15 @@ function Workspace() {
       >
         Đến nội dung chính
       </a>
-      <div className="layout min-h-dvh md:grid md:grid-cols-[14rem_minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <div
+        inert={dialog !== null}
+        className="layout min-h-dvh md:grid md:grid-cols-[14rem_minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]"
+      >
         <Sidebar />
         <main id="main-content" tabIndex={-1} className="min-w-0 outline-none">
           <header className="topbar flex min-h-20 flex-wrap items-center justify-between gap-3 border-b bg-card px-4 py-4 sm:px-6 xl:px-9">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="hidden sm:inline">Workspace</span>
+              <span className="hidden sm:inline">Không gian tri thức</span>
               <ChevronRight
                 className="hidden size-3 sm:block"
                 aria-hidden="true"
@@ -153,7 +177,7 @@ function Workspace() {
               <Pill tone={backend ? "green" : "red"}>
                 {backend ? "Đã kết nối" : "DEMO"}
               </Pill>
-              <span className="max-w-60 break-words">
+              <span className="max-w-60 break-words text-muted-foreground">
                 {backend ? `${user.name} · ${user.role}` : roles[state.page]}
               </span>
               {backend && (
@@ -187,14 +211,15 @@ function Workspace() {
             ref={workspaceRef}
             className="workspace mx-auto max-w-[1480px] px-4 py-5 sm:px-6 xl:px-9 xl:py-7"
           >
-            <div className="demo-bar mb-7 flex flex-col items-start justify-between gap-3 rounded-lg border bg-card px-4 py-3 lg:flex-row lg:items-center">
+            <div className="demo-bar mb-6 flex flex-col items-start justify-between gap-3 rounded-lg border px-4 py-3 lg:flex-row lg:items-center">
               <div className="flex items-center gap-3">
                 <span className="demo-bar-icon">
                   <ArrowUpRight className="size-5" aria-hidden="true" />
                 </span>
                 <div>
                   <strong className="text-xs">
-                    TÌNH HUỐNG MẪU · Camera kiểm tra báo ảnh mờ
+                    <span className="text-primary">TÌNH HUỐNG MẪU</span> ·
+                    Camera kiểm tra báo ảnh mờ
                   </strong>
                   <span className="tiny muted block">
                     {backend
@@ -243,6 +268,7 @@ function Workspace() {
       </div>
       <div
         role="status"
+        aria-label="Thông báo"
         aria-live="polite"
         aria-atomic="true"
         className={cn(

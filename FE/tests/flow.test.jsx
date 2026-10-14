@@ -128,7 +128,7 @@ describe("Meeting-to-Shopfloor React migration", () => {
       screen.getByRole("button", { name: "Lưu ghi chú → tạo bản nháp" }),
     );
     expect(saved().noteDraft).toBe(false);
-    expect(screen.getByRole("status")).toHaveTextContent(
+    expect(screen.getByRole("status", { name: "Thông báo" })).toHaveTextContent(
       "Cần điền cả nguyên nhân",
     );
     await user.click(screen.getByRole("button", { name: "Điền ghi chú mẫu" }));

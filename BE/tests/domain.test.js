@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { generateSampleReport, verifySources } from "../src/reports.js";
-import { sampleMeeting } from "../src/sample.js";
-import { reportApproval, meeting, incident, login } from "../src/schemas.js";
-import { hashPassword, verifyPassword } from "../src/auth.js";
+import { generateSampleReport, verifySources } from "../src/services/reports.js";
+import { sampleMeeting } from "../src/tools/sample.js";
+import { reportApproval, meeting, incident, login } from "../src/utils/schemas.js";
+import { hashPassword, verifyPassword } from "../src/utils/crypto.js";
 
 test("sample report preserves dissent, valid sources, unknown values and pending tasks", () => {
   const result = generateSampleReport({ id: "DR-024", ...sampleMeeting });

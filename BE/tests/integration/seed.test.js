@@ -1,14 +1,14 @@
 import test, { after } from "node:test";
 import assert from "node:assert/strict";
 import { readFile, unlink } from "node:fs/promises";
-import { pool } from "../../src/db.js";
-import { config } from "../../src/config.js";
-import { seedDatabase } from "../../src/seed.js";
-import { retrieve } from "../../src/knowledge.js";
-import { workspace } from "../../src/workspace.js";
-import { verifyPassword } from "../../src/auth.js";
-import { detectType } from "../../src/files.js";
-import { sampleMeeting } from "../../src/sample.js";
+import { pool } from "../../src/config/database.js";
+import { config } from "../../src/config/env.js";
+import { seedDatabase } from "../../src/tools/seed.js";
+import { retrieve } from "../../src/services/knowledge.js";
+import { workspace } from "../../src/services/workspace.js";
+import { verifyPassword } from "../../src/utils/crypto.js";
+import { detectType } from "../../src/utils/file-type.js";
+import { sampleMeeting } from "../../src/tools/sample.js";
 
 if (!config.DB_NAME.endsWith("_test"))
   throw new Error(

@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "start:cloud": "node scripts/start-cloud.js",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
     "db:seed:minimal": "node scripts/seed.js --minimal",
@@ -17,6 +18,7 @@
     "db:local:status": "node scripts/local-mysql.js status",
     "test": "node --test tests/*.test.js",
     "test:integration": "node --test --test-concurrency=1 tests/integration/*.test.js",
+    "test:cloud": "node --test --test-concurrency=1 tests/cloud/*.test.js tests/integration/workflow.test.js",
     "check": "node scripts/check.js"
   },
   "dependencies": {

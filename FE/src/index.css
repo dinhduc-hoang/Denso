@@ -1,32 +1,56 @@
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
+@import "@astryxdesign/core/reset.css";
+@import "@astryxdesign/core/astryx.css";
+@import "@astryxdesign/theme-neutral/theme.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Quicksand";
+  src: url("./assets/fonts/Quicksand-Variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+[data-astryx-theme="neutral"] {
+  --font-family-body: "Quicksand", "Segoe UI", sans-serif;
+  --font-family-heading: "Quicksand", "Segoe UI", sans-serif;
+  --color-accent: #c81938;
+  --color-accent-muted: #fcedf0;
+  --color-text-primary: #202d40;
+  --color-text-secondary: #59677a;
+  --radius-element: 0.5rem;
+  --radius-container: 0.875rem;
+}
+
 :root {
-  --background: #f3f5f8;
-  --foreground: #202d40;
+  --background: #f6f7f9;
+  --foreground: #252b37;
   --card: #ffffff;
-  --card-foreground: #202d40;
+  --card-foreground: #252b37;
   --popover: #ffffff;
   --popover-foreground: #202d40;
-  --primary: #c81938;
+  --primary: #c8102e;
   --primary-foreground: #ffffff;
   --secondary: #edf1f6;
   --secondary-foreground: #202d40;
   --muted: #edf1f6;
-  --muted-foreground: #59677a;
+  --muted-foreground: #606a79;
   --accent: #fcedf0;
   --accent-foreground: #c81938;
   --destructive: #cf1738;
-  --border: #dfe5ed;
+  --border: #e4e7ec;
   --input: #cbd4e0;
   --ring: #c81938;
   --success: #08684e;
   --warning: #925a00;
-  --sidebar: #182333;
-  --sidebar-muted: #b5c1d2;
-  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-muted: #606a79;
+  --ink: #182333;
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -54,7 +78,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --font-sans: "Quicksand", "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -63,6 +87,10 @@
   }
   body {
     @apply m-0 bg-background font-sans text-sm leading-relaxed text-foreground;
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
   }
   ::selection {
     background: var(--accent);
@@ -91,6 +119,12 @@
 }
 
 @layer components {
+  .app-button > span > span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: inherit;
+  }
   .eyebrow {
     @apply text-[11px] font-bold tracking-widest text-primary uppercase;
   }
@@ -114,7 +148,7 @@
   }
   .panel {
     @apply mb-5 min-w-0 gap-0 rounded-xl border bg-card p-5 text-card-foreground sm:p-6;
-    box-shadow: 0 2px 3px rgb(24 35 51 / 2%);
+    box-shadow: 0 2px 6px rgb(24 35 51 / 2%);
   }
   .panel-head {
     @apply mb-4 flex flex-wrap items-center justify-between gap-3;
@@ -193,6 +227,8 @@
   }
   .next-block {
     @apply rounded-xl bg-foreground p-5 text-white;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #cbd5e1;
   }
   .next-block p {
     @apply text-xs text-slate-300;
@@ -220,7 +256,7 @@
     @apply flex flex-col items-start gap-1;
   }
   .brand-wordmark {
-    @apply text-3xl leading-none font-black tracking-tight text-primary italic;
+    @apply text-3xl leading-none font-bold tracking-tight text-primary italic;
   }
   .brand-caption {
     @apply text-[9px] font-semibold tracking-[0.16em];
@@ -228,19 +264,20 @@
   }
   .sidebar {
     background: var(--sidebar);
-    color: white;
+    color: var(--foreground);
+    border-right: 1px solid var(--border);
   }
   .sidebar .brand-wordmark {
-    color: white;
+    color: var(--primary);
   }
   .sidebar-intro {
-    @apply mx-3 mt-8 mb-7 border-t border-white/10 pt-6;
+    @apply mx-2 mt-7 mb-7 flex items-center gap-3 rounded-lg border bg-background p-3;
   }
   .sidebar-product {
-    @apply block text-sm font-semibold;
+    @apply block text-xs font-bold;
   }
   .sidebar-caption {
-    @apply mt-1 block text-xs;
+    @apply mt-1 block text-[11px];
     color: var(--sidebar-muted);
   }
   .sidebar-label,
@@ -250,35 +287,49 @@
   .sidebar-link {
     color: var(--sidebar-muted);
     border: 1px solid transparent;
+    background-image: none;
+    font-weight: 600;
+    border-radius: 8px;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .sidebar-link > span,
+  .sidebar-link > span > span {
+    width: 100%;
+  }
+  .sidebar-group {
+    @apply mt-5 mb-2 px-3 text-[9px] font-bold tracking-wider text-muted-foreground;
   }
   .sidebar-link:hover {
-    background: rgb(255 255 255 / 6%);
-    color: white;
+    background: var(--background);
+    color: var(--foreground);
   }
   .sidebar-link-active,
   .sidebar-link-active:hover {
-    background: rgb(255 255 255 / 9%);
-    color: white;
-    border-color: rgb(255 255 255 / 12%);
-    box-shadow: inset 3px 0 0 var(--primary);
+    background: var(--accent);
+    color: var(--primary);
+    border-color: transparent;
+    box-shadow: none;
   }
-  .sidebar-link-active > svg:first-child {
-    color: #ff8b9e;
+  .sidebar-link-active svg {
+    color: var(--primary);
   }
   .sidebar-status {
-    @apply flex items-start gap-3 rounded-lg border border-white/10 p-3;
+    @apply flex items-start gap-3 rounded-lg border bg-background p-3;
   }
   .sidebar-status strong {
-    @apply block text-[11px] font-medium text-white;
+    @apply block text-[11px] font-bold text-foreground;
   }
   .sidebar-status span {
     @apply mt-1 block text-[11px];
   }
   .demo-bar {
-    border-left: 3px solid var(--primary);
+    background: #fff5f6;
+    border-color: #f4dce1;
   }
   .demo-bar-icon {
-    @apply grid size-9 shrink-0 place-items-center rounded-lg bg-accent text-primary;
+    @apply grid size-8 shrink-0 place-items-center rounded-lg bg-white text-primary;
   }
   .step-item {
     @apply flex min-w-0 items-center gap-3 rounded-lg border bg-card p-3 text-muted-foreground;
@@ -306,20 +357,26 @@
   }
   .login-page {
     @apply grid min-h-dvh items-center p-4 sm:p-8;
+    background: #f3f4f6;
   }
   .login-layout {
-    @apply mx-auto grid w-full max-w-6xl rounded-xl border bg-card lg:grid-cols-2;
-    box-shadow: 0 12px 48px rgb(24 35 51 / 6%);
+    @apply mx-auto grid w-full max-w-6xl overflow-hidden rounded-2xl border bg-card lg:grid-cols-2;
+    box-shadow: 0 24px 80px rgb(24 35 51 / 8%);
   }
   .login-story {
-    @apply flex flex-col rounded-t-xl p-6 text-white sm:p-10 lg:rounded-tr-none lg:rounded-bl-xl lg:p-12;
-    background: var(--sidebar);
+    @apply relative isolate flex flex-col overflow-hidden p-6 text-white sm:p-10 lg:p-12;
+    background: var(--ink);
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #c3ccd9;
   }
   .login-story .brand-wordmark {
     color: white;
   }
+  .login-story .brand-caption {
+    color: #c3ccd9;
+  }
   .login-story-content {
-    @apply my-8 lg:my-12;
+    @apply relative my-8 lg:my-12;
   }
   .login-kicker {
     @apply text-[10px] font-semibold tracking-widest;
@@ -333,7 +390,7 @@
   }
   .login-description {
     @apply max-w-md text-sm leading-7;
-    color: var(--sidebar-muted);
+    color: #c3ccd9;
   }
   .login-flow {
     @apply mt-10 hidden space-y-5 lg:block;
@@ -349,15 +406,41 @@
   }
   .login-flow li div > span {
     @apply mt-1 block text-xs;
-    color: var(--sidebar-muted);
+    color: #c3ccd9;
   }
   .login-flow-number {
     @apply ml-auto text-xs;
-    color: var(--sidebar-muted);
+    color: #c3ccd9;
   }
   .login-story-footer {
-    @apply mt-auto mb-0 text-[10px] tracking-wide;
-    color: var(--sidebar-muted);
+    @apply relative mt-auto mb-0 border-t border-white/15 pt-5 text-[10px] tracking-wide;
+    color: #c3ccd9;
+  }
+  .login-form-icon {
+    @apply mb-6 grid size-12 place-items-center rounded-xl bg-accent text-primary;
+  }
+  .login-orbit {
+    position: absolute;
+    z-index: -1;
+    width: 440px;
+    height: 440px;
+    right: -240px;
+    top: -200px;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 50%;
+  }
+  .login-orbit span {
+    position: absolute;
+    inset: 32px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 12%);
+  }
+  .login-orbit span:nth-child(2) {
+    inset: 64px;
+  }
+  .login-orbit span:nth-child(3) {
+    inset: 96px;
+    background: rgb(200 16 46 / 25%);
   }
   .login-form-panel {
     @apply flex items-center p-6 sm:p-10 lg:p-12;
@@ -384,8 +467,192 @@
     @apply mt-6 mb-0 text-center text-[11px] text-muted-foreground;
   }
   .overview-hero {
-    @apply relative;
-    border-top: 3px solid var(--primary);
+    @apply relative grid items-center gap-8 overflow-hidden border-0 p-6 text-white sm:p-8 xl:grid-cols-[1.2fr_1fr];
+    background: var(--ink);
+    border-radius: 16px;
+  }
+  .overview-welcome {
+    @apply mb-5 flex flex-wrap items-center justify-between gap-4;
+  }
+  .overview-welcome h2 {
+    @apply mt-1 mb-1 text-2xl font-bold;
+  }
+  .overview-welcome p {
+    @apply text-[13px];
+  }
+  .hero-kicker {
+    @apply mb-4 flex items-center gap-2 text-[10px] font-bold tracking-wider;
+    color: #ccd4df;
+  }
+  .hero-kicker > span {
+    @apply h-0.5 w-6 bg-primary;
+  }
+  .hero-copy h1 {
+    @apply mb-4 text-[28px] leading-snug font-bold sm:text-[32px];
+    color: white;
+  }
+  .hero-copy h1 > span {
+    color: #ff97a8;
+  }
+  .hero-copy p {
+    @apply mb-5 max-w-md text-[13px] leading-6;
+    color: #ccd4df;
+  }
+  .hero-secondary {
+    color: white;
+    background: transparent;
+    border-color: #657387;
+    background-image: none;
+  }
+  .hero-secondary:hover {
+    background: rgb(255 255 255 / 10%);
+    color: white;
+  }
+  .loop-visual {
+    @apply relative rounded-xl border border-white/15 p-5 sm:p-6;
+    background-image: radial-gradient(#ffffff15 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .loop-caption {
+    @apply flex items-center justify-center gap-2 text-[9px] font-bold tracking-wider;
+    color: #ccd4df;
+  }
+  .status-dot {
+    @apply inline-block size-1.5 shrink-0 rounded-full;
+    background: #84ddb5;
+  }
+  .loop-nodes {
+    @apply relative my-6 grid grid-cols-3 gap-3;
+  }
+  .loop-nodes::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    border-top: 1px dashed #657387;
+  }
+  .loop-node {
+    @apply relative flex flex-col items-center gap-3 rounded-lg border border-white/15 px-2 py-4;
+    background: #202e40;
+  }
+  .loop-node-number {
+    @apply text-[9px] font-semibold;
+    color: #bdc8d8;
+  }
+  .loop-node-icon {
+    @apply grid size-10 place-items-center rounded-lg;
+    color: #ff97a8;
+    background: #3b293b;
+  }
+  .loop-node strong {
+    @apply text-[11px] font-semibold;
+  }
+  .loop-node:nth-child(2) {
+    border-color: #a4475b;
+  }
+  .loop-return {
+    @apply flex items-center justify-center gap-2 text-[10px];
+    color: #ccd4df;
+  }
+  .overview-metrics {
+    @apply mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4;
+  }
+  .metric-card {
+    @apply mb-0 p-4 sm:p-5;
+  }
+  .metric-context {
+    @apply text-[9px] font-bold tracking-wider text-muted-foreground;
+  }
+  .metric-bottom {
+    @apply mt-4 flex items-center gap-3;
+  }
+  .metric-bottom > span {
+    @apply text-xs leading-5 text-muted-foreground;
+  }
+  .metric-bottom .metric-value {
+    @apply mt-0 shrink-0 text-[32px] font-bold;
+  }
+  .metric-icon[data-tone="0"] {
+    background: #fcedf0;
+    color: var(--primary);
+  }
+  .metric-icon[data-tone="1"] {
+    background: #edf2fc;
+    color: #3964a1;
+  }
+  .metric-icon[data-tone="2"] {
+    background: #eaf6ef;
+    color: var(--success);
+  }
+  .metric-icon[data-tone="3"] {
+    background: #fff3e1;
+    color: var(--warning);
+  }
+  .overview-detail {
+    @apply grid grid-cols-1 gap-5 xl:grid-cols-[1.6fr_1fr];
+  }
+  .overview-journey .panel-head h2,
+  .overview-next h2,
+  .overview-resources .panel-head h2 {
+    @apply text-lg font-bold;
+  }
+  .journey-list {
+    @apply grid;
+  }
+  .journey-row {
+    @apply flex min-h-16 w-full items-center gap-3 border-t py-3 text-left;
+  }
+  .journey-row:hover .journey-text strong {
+    color: var(--primary);
+  }
+  .journey-icon {
+    @apply grid size-9 shrink-0 place-items-center rounded-lg bg-background text-muted-foreground;
+  }
+  .journey-done {
+    @apply bg-emerald-50 text-success;
+  }
+  .journey-text {
+    @apply min-w-0 flex-1;
+  }
+  .journey-text strong {
+    @apply block text-[13px] font-bold;
+  }
+  .journey-text small {
+    @apply mt-0.5 block text-xs text-muted-foreground;
+  }
+  .journey-state {
+    @apply hidden text-[10px] font-semibold text-muted-foreground sm:block;
+  }
+  .overview-next {
+    @apply flex flex-col;
+  }
+  .next-icon {
+    @apply mt-5 mb-4 grid size-11 place-items-center rounded-xl bg-accent text-primary;
+  }
+  .overview-next h2 {
+    @apply mb-2;
+  }
+  .overview-next p {
+    @apply mb-5 text-[13px] leading-6;
+  }
+  .next-scope {
+    @apply mt-5 flex items-start gap-2 border-t pt-4 text-[11px] leading-5 text-muted-foreground;
+  }
+  .workflow-details {
+    @apply border-t;
+    scroll-margin-top: 24px;
+  }
+  .workflow-details summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-[13px] font-semibold;
+  }
+  .workflow-details summary:hover {
+    color: var(--primary);
+  }
+  .workflow-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .workflow-details[open] summary svg {
+    transform: rotate(90deg);
   }
   .overview-flow {
     @apply rounded-xl border bg-background p-5;
@@ -425,6 +692,51 @@
   }
   .topbar {
     min-height: 4rem;
+  }
+  .sidebar {
+    padding-bottom: 0.5rem;
+  }
+  .sidebar nav {
+    margin-top: 1rem;
+  }
+  .overview-welcome h2 {
+    font-size: 1.25rem;
+  }
+  .loop-visual {
+    display: none;
+  }
+  .overview-hero {
+    padding: 1.5rem;
+  }
+  .metric-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  .metric-context {
+    font-size: 8px;
+  }
+  .hero-copy h1 {
+    font-size: 1.5rem;
+  }
+  .page-head h1 {
+    font-size: 1.625rem;
+  }
+  .demo-bar .tiny {
+    font-size: 11px;
+  }
+  .demo-bar .row-actions {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
   }
 }
 

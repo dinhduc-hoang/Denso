@@ -35,7 +35,17 @@ function collect(directory) {
 }
 collect(root);
 collect(join(repositoryRoot, "BE"));
-entries["README.md"] = readFileSync(join(repositoryRoot, "README.md"));
+collect(join(repositoryRoot, "deploy"));
+for (const name of [
+  "README.md",
+  "package.json",
+  "package-lock.json",
+  "render.yaml",
+  ".gitignore",
+  "Dockerfile",
+  ".dockerignore",
+])
+  entries[name] = readFileSync(join(repositoryRoot, name));
 writeFileSync(
   join(root, "public", "source-code.zip"),
   zipSync(entries, { level: 6 }),

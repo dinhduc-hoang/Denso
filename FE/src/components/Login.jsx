@@ -26,8 +26,15 @@ export default function Login({ onLogin, busy, error }) {
       <div className="login-layout">
         <aside className="login-story" aria-label="Giới thiệu workspace">
           <Brand />
+          <div className="login-orbit" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
           <div className="login-story-content">
-            <span className="login-kicker">KẾT NỐI TRI THỨC VÀ VẬN HÀNH</span>
+            <span className="login-kicker">
+              MEETING → KNOWLEDGE → SHOPFLOOR
+            </span>
             <p className="login-headline">
               Quyết định trong họp.
               <br />
@@ -77,7 +84,10 @@ export default function Login({ onLogin, busy, error }) {
         </aside>
         <section className="login-form-panel" aria-labelledby="login-heading">
           <div className="login-form-content">
-            <span className="eyebrow">WORKSPACE</span>
+            <span className="login-form-icon" aria-hidden="true">
+              <ShieldCheck className="size-6" />
+            </span>
+            <span className="eyebrow">KHÔNG GIAN TRI THỨC</span>
             <h1 id="login-heading">Chào mừng trở lại</h1>
             <p className="muted mb-8">
               Đăng nhập để tiếp tục vòng tri thức của bạn.

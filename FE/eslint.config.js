@@ -8,6 +8,7 @@ export default [
     ignores: [
       "dist/**",
       "node_modules/**",
+      ".local/**",
       "playwright-report/**",
       "test-results/**",
     ],

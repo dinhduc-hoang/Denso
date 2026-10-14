@@ -3,6 +3,8 @@
 Dự án gồm frontend [`FE`](FE/README.md) và backend **Express + MySQL** [`BE`](BE/README.md).
 FE mặc định đăng nhập và gọi backend. Xem [hướng dẫn cài database, seed và chạy toàn bộ ứng dụng](BE/README.md).
 
+Deploy bằng Docker trên Render: xem [hướng dẫn Render + Aiven](deploy/README.md), [`Dockerfile`](Dockerfile) và cấu hình [`render.yaml`](render.yaml). Image đóng gói FE + Express, kết nối MySQL bên ngoài và tự migrate/seed khi khởi động. Chạy `npm run build` ở thư mục gốc để chuẩn bị toàn bộ ứng dụng ngoài Docker, `npm start` để migrate/seed và khởi động backend (cần cấu hình environment).
+
 ```powershell
 cd BE
 npm.cmd ci

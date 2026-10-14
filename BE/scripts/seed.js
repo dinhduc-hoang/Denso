@@ -1,5 +1,5 @@
-import { pool } from "../src/db.js";
-import { seedDatabase } from "../src/seed.js";
+import { pool } from "../src/config/database.js";
+import { seedDatabase } from "../src/tools/seed.js";
 
 try {
   const result = await seedDatabase(process.env.SEED_PASSWORD, {
